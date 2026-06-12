@@ -1,8 +1,12 @@
-# COVID-19 X-Ray Classification — From Scratch Implementation
+# COVID-19 X-Ray Classification using Transfer Learning
+
+This project is an independent implementation of the methodology proposed in the paper. The original publication did not provide source code, so the complete training and evaluation pipeline was developed based on the paper's descriptions and experimental setup.
 
 Implementation of the paper:
 **"Facilitating COVID recognition from X-rays with computer vision models and transfer learning"**
 Varde et al., Multimedia Tools and Applications, 2023.
+
+Paper: https://link.springer.com/article/10.1007/s11042-023-15744-9
 
 ---
 
@@ -16,6 +20,17 @@ Classifies chest X-ray images into 3 classes:
 Uses Transfer Learning (Strategy 1 from the paper): pretrained ImageNet weights are
 loaded into VGG16 / VGG19 / ResNet101, all convolutional layers are frozen, and only
 the final classifier head is trained on chest X-ray data.
+
+---
+
+## Key Features
+
+- Independent implementation of a published research paper
+- Transfer learning with VGG16, VGG19, and ResNet101
+- Manual image augmentation using NumPy and PIL
+- Chest X-ray classification into COVID, Pneumonia, and Normal classes
+- Training curve and confusion matrix visualization
+- Model performance comparison across architectures
 
 ---
 
@@ -43,8 +58,9 @@ The actual model architectures and data pipeline are all custom.
 
 ## Dataset Setup
 
-Download from Kaggle:
+Download the dataset from Kaggle:
 https://www.kaggle.com/datasets/prashant268/chest-xray-covid19-pneumonia
+Note: The dataset is not included in this repository due to size constraints. Please download it from the original source and organize it as shown below.
 
 Organize as:
 ```
@@ -58,9 +74,6 @@ data/
     pneumonia/
     normal/
 ```
-
-The paper uses 50-500 samples per class. Start with 100 per class to replicate
-their "minimum samples / maximum accuracy" experiments.
 
 ---
 
@@ -81,7 +94,7 @@ Just put fewer images in the train folder — e.g. 50 per class, 100 per class, 
 
 ---
 
-## Expected Results (from paper, Table 1)
+## Reported Results from the Original Paper
 
 | Model     | Samples | Accuracy |
 |-----------|---------|----------|
@@ -91,3 +104,9 @@ Just put fewer images in the train folder — e.g. 50 per class, 100 per class, 
 
 VGG models outperform ResNet101 on small datasets because their architecture
 transfers better to medical X-ray features with limited fine-tuning data.
+
+---
+
+## Disclaimer
+
+This project is intended for educational and research purposes only and should not be used for medical diagnosis.
