@@ -1,212 +1,93 @@
-# COVID-19 Chest X-Ray Classification using Transfer Learning
+# COVID-19 X-Ray Classification — From Scratch Implementation
 
-## Overview
-
-This project is an independent implementation of the methodology proposed in the research paper:
-
-**Facilitating COVID Recognition from X-rays with Computer Vision Models and Transfer Learning**
-Varde et al., Multimedia Tools and Applications, 2024.
-
-The original paper did not provide publicly available source code. Therefore, the complete classification pipeline was implemented independently based on the methodology, architecture descriptions, and experimental procedures described in the publication.
-
-The objective is to classify chest X-ray images into three categories:
-
-* COVID-19
-* Pneumonia
-* Normal (Healthy)
-
-The project reproduces the transfer learning strategy presented in the paper and compares the performance of:
-
-* VGG16
-* VGG19
-* ResNet101
+Implementation of the paper:
+**"Facilitating COVID recognition from X-rays with computer vision models and transfer learning"**
+Varde et al., Multimedia Tools and Applications, 2023.
 
 ---
 
-## Research Paper
+## What this does
 
-Reference:
+Classifies chest X-ray images into 3 classes:
+- **COVID-positive**
+- **Pneumonia-positive**
+- **Normal / Healthy**
 
-Varde, A. S., et al.
-
-"Facilitating COVID Recognition from X-rays with Computer Vision Models and Transfer Learning."
-
-Published in Multimedia Tools and Applications, 2024.
-
-This repository is intended solely as an educational and research implementation of the methodology proposed in the paper.
-
----
-
-## Methodology
-
-The implementation follows the workflow described in the paper:
-
-1. Chest X-ray image acquisition
-2. Image preprocessing and normalization
-3. Data augmentation
-4. Transfer learning using pretrained ImageNet models
-5. Training of classifier heads
-6. Evaluation using accuracy, loss curves, and confusion matrices
-
-The project follows Transfer Learning Strategy 1 described in the paper:
-
-* Load pretrained ImageNet weights
-* Freeze convolutional feature extraction layers
-* Train only the final classification layers on chest X-ray images
+Uses Transfer Learning (Strategy 1 from the paper): pretrained ImageNet weights are
+loaded into VGG16 / VGG19 / ResNet101, all convolutional layers are frozen, and only
+the final classifier head is trained on chest X-ray data.
 
 ---
 
-## Data Augmentation
+## Files
 
-To improve generalization and reduce overfitting, the following augmentation techniques are implemented:
-
-* Horizontal Flipping
-* Rotation
-* Translation (Shift)
-* Zooming
-* Gaussian Noise Injection
-
-Augmentation is implemented manually using NumPy and PIL operations.
+| File | What it does |
+|------|-------------|
+| `dataset.py` | Loads images from folders; all augmentation (flip, rotate, shift, zoom, noise) done manually with NumPy/PIL |
+| `vgg_models.py` | VGG16 and VGG19 architectures defined layer by layer; pretrained weight remapping |
+| `resnet_model.py` | ResNet101 with bottleneck blocks and skip connections; pretrained weights |
+| `train_eval.py` | Training loop, evaluation, accuracy/loss curves, confusion matrix |
+| `main.py` | Entry point — runs one or all models and prints comparison |
 
 ---
 
-## Models Implemented
+## Requirements
 
-### VGG16
-
-Transfer-learning based VGG16 model with pretrained ImageNet weights and custom classifier head.
-
-### VGG19
-
-Transfer-learning based VGG19 model with pretrained ImageNet weights and custom classifier head.
-
-### ResNet101
-
-Implementation of ResNet101 using bottleneck residual blocks and skip connections with pretrained ImageNet weights.
+```
+pip install torch torchvision pillow numpy matplotlib scikit-learn
+```
+Note: `torchvision` is needed only for `load_state_dict_from_url` utility.
+The actual model architectures and data pipeline are all custom.
 
 ---
 
-## Dataset
+## Dataset Setup
 
-Chest X-ray dataset:
-
+Download from Kaggle:
 https://www.kaggle.com/datasets/prashant268/chest-xray-covid19-pneumonia
 
-Classes:
-
-* COVID
-* Pneumonia
-* Normal
-
-Expected folder structure:
-
+Organize as:
+```
 data/
-├── train/
-│   ├── covid/
-│   ├── pneumonia/
-│   └── normal/
-│
-└── val/
-├── covid/
-├── pneumonia/
-└── normal/
+  train/
+    covid/
+    pneumonia/
+    normal/
+  val/
+    covid/
+    pneumonia/
+    normal/
+```
+
+The paper uses 50-500 samples per class. Start with 100 per class to replicate
+their "minimum samples / maximum accuracy" experiments.
 
 ---
 
-## Project Structure
+## Running
 
-.
-├── dataset.py
-├── main.py
-├── resnet_model.py
-├── train_eval.py
-├── vgg_models.py
-├── README.md
-└── data/
-├── train/
-└── val/
+Run all 3 models (as per paper):
+```bash
+python main.py --train_dir data/train --val_dir data/val --epochs 20
+```
 
----
+Run a single model:
+```bash
+python main.py --model vgg16 --epochs 25 --batch_size 16 --lr 0.001
+```
 
-## Installation
-
-Clone the repository:
-
-git clone https://github.com/USERNAME/REPOSITORY_NAME.git
-
-Move into the project directory:
-
-cd REPOSITORY_NAME
-
-Install dependencies:
-
-pip install torch torchvision numpy pillow matplotlib scikit-learn
+Run with fewer samples (to replicate paper's Table 1):
+Just put fewer images in the train folder — e.g. 50 per class, 100 per class, etc.
 
 ---
 
-## Running Experiments
+## Expected Results (from paper, Table 1)
 
-Run all models:
+| Model     | Samples | Accuracy |
+|-----------|---------|----------|
+| VGG-16    | 50      | 97%      |
+| VGG-19    | 100     | 99%      |
+| ResNet101 | 250     | 75%      |
 
-python main.py --model all --epochs 20
-
-Run VGG16 only:
-
-python main.py --model vgg16 --epochs 20
-
-Run VGG19 only:
-
-python main.py --model vgg19 --epochs 20
-
-Run ResNet101 only:
-
-python main.py --model resnet101 --epochs 20
-
----
-
-## Evaluation Metrics
-
-The implementation evaluates models using:
-
-* Classification Accuracy
-* Cross-Entropy Loss
-* Confusion Matrix
-* Training Curves
-
-Generated outputs include:
-
-* Accuracy plots
-* Loss plots
-* Confusion matrices
-* Model checkpoints
-
----
-
-## Technologies Used
-
-* Python
-* PyTorch
-* NumPy
-* PIL
-* Matplotlib
-* Scikit-Learn
-
----
-
-## Key Learning Outcomes
-
-* Research paper analysis and reproduction
-* Transfer learning workflows
-* Medical image classification
-* CNN architectures
-* VGG and ResNet implementations
-* Data augmentation techniques
-* Deep learning model evaluation
-
----
-
-## Disclaimer
-
-This project is intended for educational and research purposes only.
-
-It should not be used as a clinical diagnostic tool. Medical diagnosis must always be performed by qualified healthcare professionals.
+VGG models outperform ResNet101 on small datasets because their architecture
+transfers better to medical X-ray features with limited fine-tuning data.
