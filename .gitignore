@@ -1,0 +1,28 @@
+**pycache**/
+*.pyc
+*.pyo
+
+# Virtual environments
+
+cv/
+venv/
+env/
+
+# Dataset
+
+data/
+
+# Training outputs
+
+checkpoints/
+results/
+
+# IDE files
+
+.vscode/
+.idea/
+
+# OS files
+
+.DS_Store
+Thumbs.db
